@@ -1,7 +1,5 @@
 const useProducts = () => {
-
-
-  return {  };
+  return {};
 };
 
 export default useProducts;

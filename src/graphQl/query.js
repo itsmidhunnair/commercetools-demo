@@ -4,8 +4,8 @@ import { gql } from "@apollo/client";
  * GraphQL Query to Get ALl Products From Projection
  */
 const getProducts = gql`
-  query getAllProducts($page: Int) {
-    products(page: ) {
+  query getAllProducts {
+    products {
       id
       name {
         ...nameFragement
