@@ -23,6 +23,7 @@ const PlpContainer = () => {
     {
       label: "Products",
       link: "/products",
+      active: true,
     },
   ];
 
@@ -33,6 +34,9 @@ const PlpContainer = () => {
         {data?.products.map((product) => (
           <PlpCard data={product} key={product.id} />
         ))}
+      </div>
+      <div>
+        <button>Show More</button>
       </div>
     </>
   );

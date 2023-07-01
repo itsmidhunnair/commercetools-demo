@@ -23,7 +23,7 @@ const camelToFlat = (camel) => {
  * Function to Product Attributes
  *
  * @param {Object} - { Attributes }
- * @returns - Foramted Attributes
+ * @returns - Foramted Attributes - {name : value}
  */
 const formatAttributes = ({ attributes }) => {
   const formatedAttributes = attributes.map((attribute) => ({
@@ -35,7 +35,6 @@ const formatAttributes = ({ attributes }) => {
       attribute.value?.key ||
       attribute.value,
   }));
-
   return formatedAttributes;
 };
 

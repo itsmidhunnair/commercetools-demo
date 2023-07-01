@@ -2,6 +2,7 @@ import { find } from "lodash";
 import React from "react";
 import { Link } from "react-router-dom";
 import { getPrice } from "../../utils/productsUtil";
+import { CartBtn } from "../common/buttons/addToCart";
 
 const PlpCard = ({ data }) => {
   const name = data.name.en;
@@ -10,8 +11,12 @@ const PlpCard = ({ data }) => {
   const centAmount = data.masterVariant.prices[0].value.centAmount;
   const fractionDigits = data.masterVariant.prices[0].value.fractionDigits;
 
-  // To get just gender of of each item
+  // To get just gender of each item
   const gender = find(data.masterVariant.attributes, { name: "gender" })?.value
+    .key;
+
+  // To get just style of each item
+  const style = find(data.masterVariant.attributes, { name: "style" })?.value
     .key;
 
   // To get Available colors of each product (incl. Variants)
@@ -27,8 +32,8 @@ const PlpCard = ({ data }) => {
           src={image}
           alt="product"
         />
-        <div className="px-5 pb-5">
-          <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white h-15">
+        <div className="px-5 pb-3">
+          <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white h-16">
             {name}
           </h5>
           <div className="flex items-center justify-between">
@@ -40,12 +45,18 @@ const PlpCard = ({ data }) => {
             </span>
           </div>
         </div>
-        <div className="p-4">
+        <div className="px-4">
           <span className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">
             {gender}
           </span>
+          <span className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">
+            {style}
+          </span>
         </div>
       </Link>
+      <div className="p-4 w-max">
+        <CartBtn />
+      </div>
     </div>
   );
 };

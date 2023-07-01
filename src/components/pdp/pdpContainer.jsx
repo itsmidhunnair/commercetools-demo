@@ -64,6 +64,7 @@ const PdpContainer = () => {
     {
       label: name,
       link: "/products",
+      active: true,
     },
   ];
 
@@ -178,12 +179,6 @@ const PdpContainer = () => {
             <p className="text-base lg:leading-tight leading-normal text-gray-600 mt-7">
               {description}
             </p>
-            {attributes.map((attribute) => (
-              <p className="text-base leading-4 mt-7 text-gray-600">
-                <span className="font-semibold">{attribute.name}</span>:{" "}
-                {attribute.value}
-              </p>
-            ))}
           </div>
           <div>
             <div className="border-t border-b py-4 mt-7 border-gray-200">
@@ -192,7 +187,7 @@ const PdpContainer = () => {
                 className="flex justify-between items-center cursor-pointer"
               >
                 <p className="text-base leading-4 text-gray-800">
-                  Shipping and returns
+                  More Details
                 </p>
                 <button
                   className="
@@ -229,8 +224,13 @@ const PdpContainer = () => {
                 }
                 id="sect"
               >
-                You will be responsible for paying for your own shipping costs
-                for returning your item. Shipping costs are nonrefundable
+                {" "}
+                {attributes.map((attribute) => (
+                  <p className="text-base leading-4 mt-7 text-gray-600">
+                    <span className="font-semibold">{attribute.name}</span>:{" "}
+                    {`${attribute.value}`}
+                  </p>
+                ))}
               </div>
             </div>
           </div>
@@ -240,7 +240,9 @@ const PdpContainer = () => {
                 onClick={() => setShow2(!show2)}
                 className="flex justify-between items-center cursor-pointer"
               >
-                <p className="text-base leading-4 text-gray-800">Contact us</p>
+                <p className="text-base leading-4 text-gray-800">
+                  Shipping and returns
+                </p>
                 <button
                   className="
 									cursor-pointer
@@ -276,8 +278,8 @@ const PdpContainer = () => {
                 }
                 id="sect"
               >
-                If you have any questions on how to return your item to us,
-                contact us.
+                You will be responsible for paying for your own shipping costs
+                for returning your item. Shipping costs are nonrefundable.
               </div>
             </div>
           </div>

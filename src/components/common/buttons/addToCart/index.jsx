@@ -14,7 +14,7 @@ export const CartBtn = () => {
   return (
     <div>
       {cartQty > 0 ? (
-        <div className="flex items-center justify-between ">
+        <div className="flex items-center justify-between">
           <button
             onClick={() => decrement()}
             className="bg-gray-800 rounded-md h-10 w-10 font-bold text-xl text-white hover:bg-gray-600"
