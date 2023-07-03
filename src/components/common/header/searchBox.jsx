@@ -20,7 +20,7 @@ const SearchBox = () => {
   return (
     <div className="relative">
       <form onSubmit={handleSubmit(submitForm)}>
-        <div className="relative hidden md:block">
+        <div className="relative">
           <input
             {...register("search")}
             onChange={(e) => {

@@ -6,7 +6,7 @@ const Header = () => {
     <>
       <div className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 md:py-4">
-          <div className="flex items-center justify-between md:justify-start">
+          <div className="flex items-center justify-between md:justify-start flex-wrap">
             {/* Menu Trigger */}
 
             <button
@@ -79,7 +79,7 @@ const Header = () => {
 
           {/* Search Mobile */}
 
-          <div className="relative md:hidden my-2">
+          {/* <div className="relative md:hidden my-2">
             <input
               type="search"
               className="mt-1 w-full pl-10 pr-2 h-10 py-1 rounded-lg border border-gray-200 focus:border-gray-300 focus:outline-none focus:shadow-inner leading-none"
@@ -100,7 +100,7 @@ const Header = () => {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
-          </div>
+          </div> */}
 
           {/* ./ Search Mobile */}
         </div>
