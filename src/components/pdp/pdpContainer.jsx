@@ -19,9 +19,9 @@ const PdpContainer = () => {
     variables: { productId: id },
   });
 
-  // useEffect(() => {
-  //   window.screenTop({ top: 0 });
-  // }, []);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   if (loading) {
     return <Loader />;
