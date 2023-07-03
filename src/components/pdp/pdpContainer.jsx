@@ -1,9 +1,9 @@
 import { useQuery } from "@apollo/client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { find } from "lodash";
 
-import { getProductById } from "../../graphQl/query";
+import { getProductById } from "../../graphQl/queries/productQuery";
 import Loader from "../common/loader";
 import { CartBtn } from "../common/buttons/addToCart";
 import { formatAttributes, getPrice } from "../../utils/productsUtil";
@@ -19,6 +19,10 @@ const PdpContainer = () => {
     variables: { productId: id },
   });
 
+  // useEffect(() => {
+  //   window.screenTop({ top: 0 });
+  // }, []);
+
   if (loading) {
     return <Loader />;
   }
@@ -27,30 +31,30 @@ const PdpContainer = () => {
     return <h1>Page 404</h1>;
   }
 
-  const product = data.product;
-  const name = product.name.en;
+  const product = data?.product;
+  const name = product?.name.en;
   const description = product?.metaDescription?.en;
 
-  const designer = find(product.masterVariant.attributes, {
+  const designer = find(product?.masterVariant?.attributes, {
     name: "designer",
-  }).value.label;
+  })?.value.label;
   const image = product.masterVariant.images[0].url;
 
   const attributes = formatAttributes({
-    attributes: product.masterVariant.attributes,
+    attributes: product.masterVariant?.attributes,
   });
 
-  const size = find(product.masterVariant.attributes, {
+  const size = find(product.masterVariant?.attributes, {
     name: "size",
-  }).value;
+  })?.value;
 
-  const color = find(product.masterVariant.attributes, {
+  const color = find(product.masterVariant?.attributes, {
     name: "color",
-  }).value;
+  })?.value;
 
-  const currencyCode = product.masterVariant.prices[0].value.currencyCode;
-  const centAmount = product.masterVariant.prices[0].value.centAmount;
-  const fractionDigits = product.masterVariant.prices[0].value.fractionDigits;
+  const currencyCode = product.masterVariant.prices[0]?.value.currencyCode;
+  const centAmount = product.masterVariant.prices[0]?.value.centAmount;
+  const fractionDigits = product.masterVariant.prices[0]?.value.fractionDigits;
 
   const breadCrumpsData = [
     {
@@ -59,7 +63,7 @@ const PdpContainer = () => {
     },
     {
       label: "Products",
-      link: "/products",
+      link: -1,
     },
     {
       label: name,
@@ -109,7 +113,7 @@ const PdpContainer = () => {
             <p className="text-base leading-4 text-gray-800">Colours</p>
             <div className="flex items-center justify-center">
               <p className="text-sm leading-none text-gray-600 uppercase">
-                {color.key}
+                {color?.key}
               </p>
               <div
                 className={`
@@ -122,7 +126,7 @@ const PdpContainer = () => {
 								cursor-pointer
                 bg-gray-400
                 `}
-                style={{ backgroundColor: `${color.key}` }}
+                style={{ backgroundColor: `${color?.key}` }}
               ></div>
               <svg
                 className="cursor-pointer"

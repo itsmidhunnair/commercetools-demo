@@ -12,16 +12,16 @@ const PlpCard = ({ data }) => {
   const fractionDigits = data.masterVariant.prices[0].value.fractionDigits;
 
   // To get just gender of each item
-  const gender = find(data.masterVariant.attributes, { name: "gender" })?.value
+  const gender = find(data?.masterVariant.attributes, { name: "gender" })?.value
     .key;
 
   // To get just style of each item
-  const style = find(data.masterVariant.attributes, { name: "style" })?.value
+  const style = find(data?.masterVariant.attributes, { name: "style" })?.value
     .key;
 
   // To get Available colors of each product (incl. Variants)
-  const availableColors = data.variants.map(
-    (variant) => find(variant.attributes, { name: "color" }).value.key
+  const availableColors = data?.variants.map(
+    (variant) => find(variant?.attributes, { name: "color" })?.value?.key
   );
 
   return (
