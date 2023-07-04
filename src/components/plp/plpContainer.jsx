@@ -1,23 +1,21 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
 import React, { useEffect } from "react";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { useSearchParams } from "react-router-dom";
+
+// GQL Query to fetch all products
 import { getProducts } from "../../graphQl/queries/productQuery";
+
+// Components
 import BreadCrumps from "../common/breadCrumps.js";
 import Loader from "../common/loader";
 import PlpCard from "./plpCard";
+import useProducts from "../../talon/useProducts";
 
+/**
+ *
+ */
 const PlpContainer = () => {
-  const [searchQuery, setSearchQuery] = useSearchParams();
-
-  const searchParam = searchQuery.get("search");
-
-  const [getAllProducts, { data, loading, error }] = useLazyQuery(getProducts);
-
-  useEffect(() => {
-    getAllProducts({ variables: { search: searchParam } });
-  }, [searchParam]);
-
-  // const { loading, error, data } = useQuery(getProducts);
+  const { data, loading, error, breadCrumpsData } = useProducts();
 
   if (loading) {
     return <Loader />;
@@ -26,17 +24,6 @@ const PlpContainer = () => {
   if (error) {
     return <h1>No Product Found1</h1>;
   }
-  const breadCrumpsData = [
-    {
-      label: "Home",
-      link: "/",
-    },
-    {
-      label: "Products",
-      link: "..",
-      active: true,
-    },
-  ];
 
   return (
     <>

@@ -1,8 +1,9 @@
+import React, { useEffect } from "react";
 import { size } from "lodash";
-import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
-import useSearch from "../../../hooks/useSearch";
+
+import useSearch from "../../../talon/useSearch";
 import SuggestionList from "./suggestionList";
 
 const SearchBox = () => {

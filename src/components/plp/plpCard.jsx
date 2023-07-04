@@ -1,28 +1,14 @@
-import { find } from "lodash";
 import React from "react";
 import { Link } from "react-router-dom";
-import { getPrice } from "../../utils/productsUtil";
+
+import { destructData } from "../../utils/productsUtil";
 import { CartBtn } from "../common/buttons/addToCart";
 
+import PropTypes from "prop-types";
+
 const PlpCard = ({ data }) => {
-  const name = data.name.en;
-  const image = data.masterVariant.images[0].url;
-  const currencyCode = data.masterVariant.prices[0].value.currencyCode;
-  const centAmount = data.masterVariant.prices[0].value.centAmount;
-  const fractionDigits = data.masterVariant.prices[0].value.fractionDigits;
-
-  // To get just gender of each item
-  const gender = find(data?.masterVariant.attributes, { name: "gender" })?.value
-    .key;
-
-  // To get just style of each item
-  const style = find(data?.masterVariant.attributes, { name: "style" })?.value
-    .key;
-
-  // To get Available colors of each product (incl. Variants)
-  const availableColors = data?.variants.map(
-    (variant) => find(variant?.attributes, { name: "color" })?.value?.key
-  );
+  const { name, image, currencyCode, price, gender, style } =
+    destructData(data);
 
   return (
     <div className="w-60 group bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -38,7 +24,7 @@ const PlpCard = ({ data }) => {
           </h5>
           <div className="flex items-center justify-between">
             <span className="text-lg font-bold text-blue-700 dark:text-white">
-              {getPrice({ centAmount, fractionDigits })}
+              {price}
               <span className="italic text-sm text-gray-700 font-medium">
                 {currencyCode}
               </span>
