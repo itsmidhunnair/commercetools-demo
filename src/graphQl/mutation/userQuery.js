@@ -7,9 +7,15 @@ const userExistQuery = gql`
 `;
 
 const registerUser = gql`
-  mutation Mutation($token: String!) {
-    registerUser(token: $token)
+  mutation Mutation($input: AuthInputs!) {
+    registerUser(input: $input)
   }
 `;
 
-export { userExistQuery, registerUser };
+const loginUserQuery = gql`
+  mutation Mutation($input: AuthInputs!) {
+    loginUser(input: $input)
+  }
+`;
+
+export { userExistQuery, registerUser, loginUserQuery };

@@ -5,17 +5,23 @@ import {
   getAuth,
   linkWithCredential,
   RecaptchaVerifier,
+  signInWithEmailAndPassword,
   signInWithPhoneNumber,
   updateProfile,
 } from "firebase/auth";
 import { toast } from "react-toastify";
 import { firebaseConfig } from "../constants/firebase/firebaseConfig";
 import { toastConfig } from "../constants/reactToastify/toastConfig";
-import { registerUser, userExistQuery } from "../graphQl/mutation/userQuery";
+import {
+  loginUserQuery,
+  registerUser,
+  userExistQuery,
+} from "../graphQl/mutation/userQuery";
 
 const useAuth = ({ setOtpField, otp, otpField }) => {
   const [checkExistUser] = useMutation(userExistQuery);
   const [registerUserCT] = useMutation(registerUser);
+  const [loginUser] = useMutation(loginUserQuery);
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -111,7 +117,10 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
       const { accessToken } = user;
       await registerUserCT({
         variables: {
-          token: accessToken,
+          input: {
+            token: `bearer ${accessToken}`,
+            password,
+          },
         },
       });
       console.log("Email/password provider linked successfully");
@@ -165,15 +174,41 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
   };
 
   /**
+   * Login Using Credentials
+   *
+   * @param email
+   * @param phone
+   *
+   */
+  const LoginUsingEmail = async ({ email, password }) => {
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      console.log(result.user.accessToken);
+      const data = await loginUser({
+        variables: {
+          input: {
+            token: `bearer ${result.user.accessToken}`,
+            password,
+          },
+        },
+      });
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  /**
    * To Submit Signup Form
    *
    * @param {{email:String, password:String, phone:String}} - Input Field of Signup Form
    */
-  const submitLoginForm = ({ email = "", password = "", phone = "" }) => {
+  const submitLoginForm = ({ email, password, phone }) => {
     if (otpField) {
       return console.log(phone);
     }
     console.log(email, password);
+    LoginUsingEmail({ email, password });
   };
 
   /**
