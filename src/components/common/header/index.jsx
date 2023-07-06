@@ -75,6 +75,7 @@ const Header = () => {
                 <span className="pl-1 text-gray-500 text-md">0</span>
               </Link>
             </div>
+            <div></div>
           </div>
 
           {/* Search Mobile */}

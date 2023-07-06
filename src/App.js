@@ -1,6 +1,8 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 import Layout from "./router";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const client = new ApolloClient({
@@ -13,7 +15,20 @@ function App() {
       <ApolloProvider client={client}>
         <div>
           <Layout />
+          <div id="recaptcha-container"></div>
         </div>
+        <ToastContainer
+          position="top-center"
+          autoClose={2000}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </ApolloProvider>
     </BrowserRouter>
   );
