@@ -10,6 +10,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { toast } from "react-toastify";
+
 import { firebaseConfig } from "../constants/firebase/firebaseConfig";
 import { toastConfig } from "../constants/reactToastify/toastConfig";
 import {
@@ -117,10 +118,7 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
       const { accessToken } = user;
       await registerUserCT({
         variables: {
-          input: {
-            token: `bearer ${accessToken}`,
-            password,
-          },
+          token: `bearer ${accessToken}`,
         },
       });
       console.log("Email/password provider linked successfully");
@@ -181,20 +179,46 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
    *
    */
   const LoginUsingEmail = async ({ email, password }) => {
+    const loading = toast.loading("Loging in...");
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       console.log(result.user.accessToken);
       const data = await loginUser({
         variables: {
-          input: {
-            token: `bearer ${result.user.accessToken}`,
-            password,
-          },
+          token: `bearer ${result.user.accessToken}`,
         },
       });
       console.log(data);
+      toast.update(loading, {
+        ...toastConfig,
+        type: "success",
+        render: (
+          <div className="text-center">
+            User Login Successfull!
+            <br />
+            Welcome <b>{data.data.loginUser.firstName}</b>
+          </div>
+        ),
+        isLoading: false,
+      });
     } catch (error) {
-      console.log(error);
+      if (error.code === "auth/wrong-password") {
+        toast.update(loading, {
+          ...toastConfig,
+          render: "Incorrect Password, Please Try Again!",
+          type: "error",
+          isLoading: false,
+        });
+      }
+      if (error.code === "auth/too-many-requests") {
+        toast.update(loading, {
+          ...toastConfig,
+          render: "Too many Requests, Please Try Again in sometime!",
+          type: "error",
+          isLoading: false,
+        });
+      }
+      console.log(error.code);
     }
   };
 

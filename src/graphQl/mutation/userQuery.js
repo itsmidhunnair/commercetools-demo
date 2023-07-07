@@ -1,20 +1,20 @@
 import { gql } from "@apollo/client";
 
 const userExistQuery = gql`
-  mutation Mutation($input: UserData) {
+  mutation CheckIfUserExist($input: UserData) {
     checkUser(input: $input)
   }
 `;
 
 const registerUser = gql`
-  mutation Mutation($input: AuthInputs!) {
-    registerUser(input: $input)
+  mutation SignupUser($token: String!) {
+    registerUser(token: $token)
   }
 `;
 
 const loginUserQuery = gql`
-  mutation Mutation($input: AuthInputs!) {
-    loginUser(input: $input)
+  mutation LoginUser($token: String!) {
+    loginUser(token: $token)
   }
 `;
 
