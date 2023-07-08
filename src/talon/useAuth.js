@@ -28,6 +28,51 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
   const auth = getAuth(app);
 
   /**
+   * Firebase Signin with Phone function
+   *
+   * @param {loading}
+   * @param {Int} phone
+   */
+  const signupWithPhone = async (loading, phone) => {
+    const appVerifier = window.recaptchaVerifier;
+    const formatPh = `+${phone}`;
+    try {
+      const confirmationResult = await signInWithPhoneNumber(
+        auth,
+        formatPh,
+        appVerifier
+      );
+      window.confirmationResult = confirmationResult;
+      setOtpField(true);
+      toast.update(loading, {
+        ...toastConfig,
+        render: "OTP sent Successfully",
+        type: "success",
+        isLoading: false,
+      });
+      console.log("OTP sended successfully!");
+    } catch (error) {
+      if (error.code === "auth/invalid-phone-number") {
+        toast.update(loading, {
+          ...toastConfig,
+          autoClose: 5000,
+          render:
+            "OTP Sending Failed!, Please recheck your phone number & don't forget to include the Country Code!!",
+          type: "error",
+          isLoading: false,
+        });
+      }
+      console.log(error);
+      // toast.update(loading, {
+      //   ...toastConfig,
+      //   render: "OTP Sending Failed!",
+      //   type: "error",
+      //   isLoading: false,
+      // });
+    }
+  };
+
+  /**
    * To SigninWithPhone in firebase
    * And Send OTP
    *
@@ -36,7 +81,7 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
   const onSignup = async (phone) => {
     const loading = toast.loading("Requesting OTP...");
     if (window.recaptchaVerifier) {
-      return;
+      signupWithPhone(loading, phone);
     } else {
       window.recaptchaVerifier = new RecaptchaVerifier(
         "recaptcha-container",
@@ -46,32 +91,7 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
         },
         auth
       );
-      const appVerifier = window.recaptchaVerifier;
-      const formatPh = `+${phone}`;
-      try {
-        const confirmationResult = await signInWithPhoneNumber(
-          auth,
-          formatPh,
-          appVerifier
-        );
-        window.confirmationResult = confirmationResult;
-        setOtpField(true);
-        toast.update(loading, {
-          ...toastConfig,
-          render: "OTP sent Successfully",
-          type: "success",
-          isLoading: false,
-        });
-        console.log("OTP sended successfully!");
-      } catch (error) {
-        console.log(error);
-        toast.update(loading, {
-          ...toastConfig,
-          render: "OTP Sending Failed!",
-          type: "error",
-          isLoading: false,
-        });
-      }
+      signupWithPhone(loading, phone);
     }
   };
 
@@ -116,13 +136,20 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
     try {
       await linkWithCredential(user, credential);
       const { accessToken } = user;
-      await registerUserCT({
+      const { data } = await registerUserCT({
         variables: {
           token: `bearer ${accessToken}`,
         },
       });
-      console.log("Email/password provider linked successfully");
-      return true;
+      console.log(data);
+      if (data.registerUser.success === false) {
+        throw "Sign up failed please try again";
+      }
+
+      if (data.registerUser.success === true) {
+        console.log("Email/password provider linked successfully");
+        return "Sign up Successfull";
+      }
     } catch (error) {
       console.log("Error linking email/password provider:", error);
       throw error;
