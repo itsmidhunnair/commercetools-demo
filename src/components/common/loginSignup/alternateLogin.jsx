@@ -2,8 +2,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 import GithubSvg from "../../../constants/svgs/githubSvg";
 import GoogleSvg from "../../../constants/svgs/googleSvg";
+import useAuth from "../../../talon/useAuth";
 
 const AlternateLogin = ({ type = "signup", phoneLogin, setPhoneLogin }) => {
+  const { signupWithGoogle } = useAuth({
+    otpField: "",
+    setOtpField: "",
+    otp: "",
+  });
+
   return (
     <div>
       {" "}
@@ -23,7 +30,7 @@ const AlternateLogin = ({ type = "signup", phoneLogin, setPhoneLogin }) => {
             Login using {phoneLogin ? "Email" : "Phone"}
           </button>
         )}
-        <button className="svg-btn">
+        <button className="svg-btn" onClick={signupWithGoogle}>
           <GoogleSvg /> Google
         </button>
         <button className="svg-btn">

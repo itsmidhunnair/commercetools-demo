@@ -3,12 +3,16 @@ import { initializeApp } from "firebase/app";
 import {
   EmailAuthProvider,
   getAuth,
+  GoogleAuthProvider,
   linkWithCredential,
   RecaptchaVerifier,
   signInWithEmailAndPassword,
   signInWithPhoneNumber,
+  signInWithPopup,
+  signInWithRedirect,
   updateProfile,
 } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { firebaseConfig } from "../constants/firebase/firebaseConfig";
@@ -20,6 +24,8 @@ import {
 } from "../graphQl/mutation/userQuery";
 
 const useAuth = ({ setOtpField, otp, otpField }) => {
+  const navigate = useNavigate();
+
   const [checkExistUser] = useMutation(userExistQuery);
   const [registerUserCT] = useMutation(registerUser);
   const [loginUser] = useMutation(loginUserQuery);
@@ -106,7 +112,22 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
     try {
       const result = await window.confirmationResult.confirm(`${otp}`);
       console.log(result);
-      await linkEmailPasswordProvider({ name, email, password });
+      // ---------------------------
+      const user = auth.currentUser;
+      const { accessToken } = user;
+      const { data } = await registerUserCT({
+        variables: {
+          input: {
+            token: `bearer ${accessToken}`,
+            email: email,
+            password: password,
+            name,
+          },
+        },
+      });
+      console.log(data);
+      // ---------------------------
+
       toast.update(loading, {
         ...toastConfig,
         render: "User Signed Up Successfully",
@@ -115,6 +136,7 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
       });
     } catch (error) {
       console.log(error);
+
       toast.update(loading, {
         ...toastConfig,
         render: "User Signed failed. Please Try Again!",
@@ -124,37 +146,43 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
     }
   }
 
-  /**
-   * Links Email and Password Credentials with Phone number Auth
-   *
-   * @param {{name:String,email:String, password:String}} {Object} - {email, password}
-   */
-  async function linkEmailPasswordProvider({ name, email, password }) {
-    const user = auth.currentUser;
-    const credential = EmailAuthProvider.credential(email, password);
-    await updateProfile(user, { displayName: name });
-    try {
-      await linkWithCredential(user, credential);
-      const { accessToken } = user;
-      const { data } = await registerUserCT({
-        variables: {
-          token: `bearer ${accessToken}`,
-        },
-      });
-      console.log(data);
-      if (data.registerUser.success === false) {
-        throw "Sign up failed please try again";
-      }
+  // /**
+  //  * Links Email and Password Credentials with Phone number Auth
+  //  *
+  //  * @param {{name:String,email:String, password:String}} {Object} - {email, password}
+  //  */
+  // async function linkEmailPasswordProvider({ name, email, password }) {
+  //   const user = auth.currentUser;
+  //   const credential = EmailAuthProvider.credential(email, password);
+  //   await updateProfile(user, { displayName: name });
+  //   try {
+  //     await linkWithCredential(user, credential);
+  //     const { accessToken } = user;
+  //     console.log(accessToken);
+  //     const { data } = await registerUserCT({
+  //       variables: {
+  //         token: `bearer ${accessToken}`,
+  //       },
+  //     });
+  //     console.log(data);
+  //     if (data.registerUser.success === false) {
+  //       throw "Sign up failed please try again";
+  //     }
 
-      if (data.registerUser.success === true) {
-        console.log("Email/password provider linked successfully");
-        return "Sign up Successfull";
-      }
-    } catch (error) {
-      console.log("Error linking email/password provider:", error);
-      throw error;
-    }
-  }
+  //     if (data.registerUser.success === true) {
+  //       console.log("Email/password provider linked successfully");
+  //       return "Sign up Successfull";
+  //     }
+  //   } catch (error) {
+  //     console.log("Error linking email/password provider:", error);
+  //     try {
+  //       user.delete();
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //     throw error;
+  //   }
+  // }
 
   /**
    * To Submit Signup Form
@@ -228,9 +256,10 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
         ),
         isLoading: false,
       });
+      navigate("/products");
     } catch (error) {
       if (error.code === "auth/wrong-password") {
-        toast.update(loading, {
+        return toast.update(loading, {
           ...toastConfig,
           render: "Incorrect Password, Please Try Again!",
           type: "error",
@@ -238,14 +267,28 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
         });
       }
       if (error.code === "auth/too-many-requests") {
-        toast.update(loading, {
+        return toast.update(loading, {
           ...toastConfig,
           render: "Too many Requests, Please Try Again in sometime!",
           type: "error",
           isLoading: false,
         });
       }
-      console.log(error.code);
+      if (error.code === "auth/user-not-found") {
+        return toast.update(loading, {
+          ...toastConfig,
+          render: "No user found!, Please signup to continue!",
+          type: "error",
+          isLoading: false,
+        });
+      }
+      console.log(error);
+      return toast.update(loading, {
+        ...toastConfig,
+        render: "Error Signin in, Please Try Again in sometime!",
+        type: "error",
+        isLoading: false,
+      });
     }
   };
 
@@ -272,6 +315,25 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
     toast.success(`your otp is ${otp}`);
   };
 
-  return { auth, onSignup, submitSignupForm, submitLoginForm, submitLoginOTP };
+  /**
+   * To Signup user using Google
+   *
+   */
+  const signupWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    provider.addScope("email");
+    provider.addScope("phone");
+    const result = await signInWithPopup(auth, provider);
+    console.log(result);
+  };
+
+  return {
+    auth,
+    onSignup,
+    submitSignupForm,
+    submitLoginForm,
+    submitLoginOTP,
+    signupWithGoogle,
+  };
 };
 export default useAuth;

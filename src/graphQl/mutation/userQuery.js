@@ -7,8 +7,8 @@ const userExistQuery = gql`
 `;
 
 const registerUser = gql`
-  mutation SignupUser($token: String!) {
-    registerUser(token: $token)
+  mutation SignupUser($input: UserRegister!) {
+    registerUser(input: $input)
   }
 `;
 
