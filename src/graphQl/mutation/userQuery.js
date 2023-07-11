@@ -18,4 +18,15 @@ const loginUserQuery = gql`
   }
 `;
 
-export { userExistQuery, registerUser, loginUserQuery };
+const registerUserWithGoogleQuery = gql`
+  mutation registerUserWithGoogle($token: String!) {
+    registerGoogleUser(token: $token)
+  }
+`;
+
+export {
+  userExistQuery,
+  registerUser,
+  loginUserQuery,
+  registerUserWithGoogleQuery,
+};

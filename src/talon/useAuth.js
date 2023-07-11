@@ -1,15 +1,16 @@
 import { useMutation } from "@apollo/client";
+import {
+  parseJsonBody,
+  readJsonBody,
+} from "@apollo/client/link/http/parseAndCheckHttpResponse";
 import { initializeApp } from "firebase/app";
 import {
-  EmailAuthProvider,
   getAuth,
   GoogleAuthProvider,
-  linkWithCredential,
   RecaptchaVerifier,
   signInWithEmailAndPassword,
   signInWithPhoneNumber,
   signInWithPopup,
-  signInWithRedirect,
   updateProfile,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +21,7 @@ import { toastConfig } from "../constants/reactToastify/toastConfig";
 import {
   loginUserQuery,
   registerUser,
+  registerUserWithGoogleQuery,
   userExistQuery,
 } from "../graphQl/mutation/userQuery";
 
@@ -29,6 +31,7 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
   const [checkExistUser] = useMutation(userExistQuery);
   const [registerUserCT] = useMutation(registerUser);
   const [loginUser] = useMutation(loginUserQuery);
+  const [registerUserToGoogle] = useMutation(registerUserWithGoogleQuery);
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -297,7 +300,7 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
    *
    * @param {{email:String, password:String, phone:String}} - Input Field of Signup Form
    */
-  const submitLoginForm = ({ email, password, phone }) => {
+  const submitLoginForm = async({ email, password, phone }) => {
     if (otpField) {
       return console.log(phone);
     }
@@ -311,7 +314,7 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
    * Will be called automatically when the OTP is entered
    *
    */
-  const submitLoginOTP = () => {
+  const submitLoginOTP = async() => {
     toast.success(`your otp is ${otp}`);
   };
 
@@ -320,11 +323,36 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
    *
    */
   const signupWithGoogle = async () => {
+    const loading = toast.loading("Attempting to login!");
     const provider = new GoogleAuthProvider();
     provider.addScope("email");
-    provider.addScope("phone");
-    const result = await signInWithPopup(auth, provider);
-    console.log(result);
+    try {
+      const { _tokenResponse } = await signInWithPopup(auth, provider);
+      console.log(_tokenResponse.idToken);
+      const { data } = await registerUserToGoogle({
+        variables: {
+          token: `bearer ${_tokenResponse.idToken}`,
+        },
+      });
+      navigate("/products");
+      toast.update(loading, {
+        ...toastConfig,
+        render: "User Loggedin Successfully!!",
+        type: "success",
+        isLoading: false,
+      });
+      console.log(data);
+    } catch (error) {
+      const err = JSON.parse(error.message);
+      if (!err.success) {
+        toast.update(loading, {
+          ...toastConfig,
+          render: err.msg,
+          type: "error",
+          isLoading: false,
+        });
+      }
+    }
   };
 
   return {
