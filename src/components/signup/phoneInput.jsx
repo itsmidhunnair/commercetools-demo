@@ -5,7 +5,6 @@ import OTPInput from "react-otp-input";
 const PhoneInput = ({ register }) => {
   const [otpField, setOtpField] = useState(false);
   const [otp, setOtp] = useState("");
-  const { handleSubmit } = useForm();
   return (
     <>
       <div className="relative">

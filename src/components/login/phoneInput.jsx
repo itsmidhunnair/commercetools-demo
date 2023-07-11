@@ -42,7 +42,6 @@ const PhoneInput = () => {
           />
           <button
             type="submit"
-            onClick={() => setOtpField(true)}
             className="hover:bg-gray-700 active:bg-gray-800 px-3 text-white group-active::ring-gray-600 group-active::border-gray-600 bg-gray-500 border-2  absolute right-0 bottom-0 py-2 rounded-r-lg"
           >
             Verify

@@ -199,33 +199,57 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
       await onOTPVerify({ name, otp, email, password });
     }
     if (!otpField) {
-      const loading = toast.loading("Validating user, Please wait!");
-      console.log(name, password, phone);
-      try {
-        const { data } = await checkExistUser({
-          variables: {
-            input: {
-              email,
-              phone: `+${phone}`,
-            },
+      await handlePhoneSignin({ name, password, phone, email });
+    }
+  };
+
+  /**
+   * Handle Phone Signin/Login after verifying if user is present or not
+   */
+  const handlePhoneSignin = async ({ name, email, password, phone }) => {
+    console.log(email);
+    const loading = toast.loading("Validating user, Please wait!");
+    console.log(name, password, phone);
+    try {
+      const { data } = await checkExistUser({
+        variables: {
+          input: {
+            email,
+            phone: `+${phone}`,
           },
+        },
+      });
+      console.log(data.checkUser.isExisting);
+      console.log(email);
+      console.log(!(email && password) && data.checkUser.isExisting);
+      if (!(email && password) && data.checkUser.isExisting === false) {
+        toast.update(loading, {
+          ...toastConfig,
+          render: "No account found, please Signin to continue!!",
+          isLoading: false,
         });
-        console.log(data);
-        if (!data.checkUser.isExisting) {
-          toast.dismiss();
-          await onSignup(phone);
-        }
-        if (data.checkUser.isExisting) {
-          console.log(data.checkUser.error);
-          toast.update(loading, {
-            ...toastConfig,
-            render: data.checkUser.msg,
-            isLoading: false,
-          });
-        }
-      } catch (error) {
-        console.log(error);
       }
+      if (!(email && password) && data.checkUser.isExisting === true) {
+        console.log("triggered");
+        toast.dismiss();
+        setOtpField(true);
+        await onSignup(phone);
+        return data;
+      }
+      if (email && password && !data.checkUser.isExisting) {
+        toast.dismiss();
+        await onSignup(phone);
+      }
+      if (email && password && data.checkUser.isExisting) {
+        console.log(data.checkUser.error);
+        toast.update(loading, {
+          ...toastConfig,
+          render: data.checkUser.msg,
+          isLoading: false,
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -300,22 +324,44 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
    *
    * @param {{email:String, password:String, phone:String}} - Input Field of Signup Form
    */
-  const submitLoginForm = async({ email, password, phone }) => {
-    if (otpField) {
-      return console.log(phone);
+  const submitLoginForm = async ({ email, password, phone }) => {
+    if (phone) {
+      const data = await handlePhoneSignin({ phone });
+      console.log(data);
+    } else {
+      console.log(email, password);
+      LoginUsingEmail({ email, password });
     }
-    console.log(email, password);
-    LoginUsingEmail({ email, password });
   };
 
   /**
-   * To submit OTP - FOR [LOGIN FORM ONLY]
-   *
-   * Will be called automatically when the OTP is entered
-   *
+   * Submit Login OTP
    */
-  const submitLoginOTP = async() => {
-    toast.success(`your otp is ${otp}`);
+  const submitLoginOTP = async () => {
+    try {
+      const result = await window.confirmationResult.confirm(`${otp}`);
+      const data = await loginUser({
+        variables: {
+          token: `bearer ${result.user.accessToken}`,
+        },
+      });
+      console.log(data);
+      // toast.update(loading, {
+      //   ...toastConfig,
+      //   type: "success",
+      //   render: (
+      //     <div className="text-center">
+      //       User Login Successfull!
+      //       <br />
+      //       Welcome <b>{data.data.loginUser.firstName}</b>
+      //     </div>
+      //   ),
+      //   isLoading: false,
+      // });
+      navigate("/products");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   /**
@@ -360,8 +406,8 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
     onSignup,
     submitSignupForm,
     submitLoginForm,
-    submitLoginOTP,
     signupWithGoogle,
+    submitLoginOTP,
   };
 };
 export default useAuth;
