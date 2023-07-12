@@ -6,7 +6,9 @@ import {
   signInWithPhoneNumber,
   signInWithPopup,
 } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { auth } from "../config/firebase.config";
 
@@ -18,8 +20,14 @@ import {
   userExistQuery,
 } from "../graphQl/mutation/userQuery";
 
-const useAuth = ({ setOtpField, otp, otpField }) => {
+const useAuth = () => {
+  const [otpField, setOtpField] = useState(false);
+  const [otp, setOtp] = useState("");
+
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { register, handleSubmit } = useForm();
 
   const [checkExistUser] = useMutation(userExistQuery);
   const [registerUserCT] = useMutation(registerUser);
@@ -391,13 +399,22 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
     }
   };
 
+  if (location.pathname === "/login" && otp.length === 6) {
+    submitLoginOTP();
+  }
+
   return {
-    auth,
     onSignup,
+    otpField,
+    setOtpField,
+    otp,
+    setOtp,
     submitSignupForm,
     submitLoginForm,
     signupWithGoogle,
     submitLoginOTP,
+    register,
+    handleSubmit,
   };
 };
 export default useAuth;

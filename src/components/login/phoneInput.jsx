@@ -1,24 +1,18 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import React from "react";
 import OTPInput from "react-otp-input";
-import { toast } from "react-toastify";
 import useAuth from "../../talon/useAuth";
 
 const PhoneInput = () => {
-  const [otpField, setOtpField] = useState(false);
-  const [otp, setOtp] = useState("");
-
-  const { register, handleSubmit } = useForm();
-
-  const { submitLoginForm, submitLoginOTP } = useAuth({
+  const {
+    submitLoginForm,
+    submitLoginOTP,
     otpField,
     setOtpField,
     otp,
-  });
-
-  if (otp.length === 6) {
-    submitLoginOTP();
-  }
+    setOtp,
+    register,
+    handleSubmit,
+  } = useAuth();
 
   return (
     <>

@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import SearchBox from "./searchBox";
 
 const Header = () => {
+  const [menu, setMenu] = useState(false);
   return (
     <>
       <div className="bg-white shadow-md sticky top-0 z-50">
@@ -12,6 +14,7 @@ const Header = () => {
             <button
               type="button"
               className="md:hidden w-10 h-10 rounded-lg -ml-2 flex justify-center items-center"
+              onClick={() => setMenu(!menu)}
             >
               <svg
                 className="text-gray-500 w-6 h-6"
@@ -50,7 +53,11 @@ const Header = () => {
               </Link>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div
+              className={`flex items-center space-x-4 flex-wrap justify-center gap-y-1 max-sm:overflow-hidden max-sm:h-${
+                menu ? "max" : "[45px]"
+              } transition-all duration-500`}
+            >
               <SearchBox />
               <Link
                 to="#"

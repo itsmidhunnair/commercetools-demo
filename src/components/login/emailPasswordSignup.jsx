@@ -1,15 +1,8 @@
 import React from "react";
-import { useForm } from "react-hook-form";
 import useAuth from "../../talon/useAuth";
 
-const EmailPasswordSignup = ({ phoneLogin }) => {
-  const { register, handleSubmit } = useForm();
-
-  const { submitLoginForm } = useAuth({
-    otpField: "",
-    setOtpField: "",
-    otp: "",
-  });
+const EmailPasswordSignup = () => {
+  const { submitLoginForm, register, handleSubmit } = useAuth();
 
   return (
     <form

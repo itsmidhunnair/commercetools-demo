@@ -1,13 +1,17 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import React from "react";
 import useAuth from "../../talon/useAuth";
 import OtpFields from "./otpFields";
 
 const EmailPasswordSignup = () => {
-  const [otp, setOtp] = useState("");
-  const { register, handleSubmit } = useForm();
-  const [otpField, setOtpField] = useState(false);
-  const { submitSignupForm } = useAuth({ setOtpField, otp, otpField });
+  const {
+    submitSignupForm,
+    otpField,
+    setOtpField,
+    otp,
+    setOtp,
+    register,
+    handleSubmit,
+  } = useAuth();
 
   return (
     <>
