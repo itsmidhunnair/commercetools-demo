@@ -1,22 +1,15 @@
 import { useMutation } from "@apollo/client";
 import {
-  parseJsonBody,
-  readJsonBody,
-} from "@apollo/client/link/http/parseAndCheckHttpResponse";
-import { initializeApp } from "firebase/app";
-import {
-  getAuth,
   GoogleAuthProvider,
   RecaptchaVerifier,
   signInWithEmailAndPassword,
   signInWithPhoneNumber,
   signInWithPopup,
-  updateProfile,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { auth } from "../config/firebase.config";
 
-import { firebaseConfig } from "../constants/firebase/firebaseConfig";
 import { toastConfig } from "../constants/reactToastify/toastConfig";
 import {
   loginUserQuery,
@@ -32,9 +25,6 @@ const useAuth = ({ setOtpField, otp, otpField }) => {
   const [registerUserCT] = useMutation(registerUser);
   const [loginUser] = useMutation(loginUserQuery);
   const [registerUserToGoogle] = useMutation(registerUserWithGoogleQuery);
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
 
   /**
    * Firebase Signin with Phone function
