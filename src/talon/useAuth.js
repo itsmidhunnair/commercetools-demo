@@ -399,6 +399,14 @@ const useAuth = () => {
     }
   };
 
+  /**
+   * To Get Logged in user's Name
+   * @returns {String} Name
+   */
+  const getUserName = () => {
+    return auth?.currentUser?.displayName;
+  };
+
   if (location.pathname === "/login" && otp.length === 6) {
     submitLoginOTP();
   }
@@ -415,6 +423,7 @@ const useAuth = () => {
     submitLoginOTP,
     register,
     handleSubmit,
+    getUserName,
   };
 };
 export default useAuth;

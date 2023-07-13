@@ -3,6 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import Layout from "./router";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MiniCart from "./components/cart/miniCart";
 
 function App() {
   const client = new ApolloClient({
