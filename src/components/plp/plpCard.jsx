@@ -5,10 +5,13 @@ import { destructData } from "../../utils/productsUtil";
 import { CartBtn } from "../common/buttons/addToCart";
 
 import PropTypes from "prop-types";
+import useCart from "../../talon/useCart";
 
 const PlpCard = ({ data }) => {
-  const { name, image, currencyCode, price, gender, style } =
+  const { name, image, currencyCode, price, gender, style, sku } =
     destructData(data);
+
+  const { addToCart } = useCart();
 
   return (
     <div className="w-60 group bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -41,7 +44,12 @@ const PlpCard = ({ data }) => {
         </div>
       </Link>
       <div className="p-4 w-max">
-        <CartBtn />
+        <button
+          className="bg-slate-700 p-2 rounded-md text-white active:bg-slate-600"
+          onClick={() => addToCart({ sku: sku })}
+        >
+          Add To Cart
+        </button>
       </div>
     </div>
   );

@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
+import useCart from "../../talon/useCart";
+import { getPrice } from "../../utils/productsUtil";
+import Loader from "../common/loader";
 import CartItemContainer from "./cartItemContainer";
 
 const MiniCart = ({ toggleMiniCart }) => {
+  const { getLineItems, products,loading } = useCart();
+
+  useEffect(() => {
+    getLineItems();
+  }, []);
+
   return (
     <div
       className="absolute z-10 h-max"
@@ -12,7 +21,7 @@ const MiniCart = ({ toggleMiniCart }) => {
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity top-[72px] max-sm:top-[94px]" />
       <div className="fixed inset-0 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full sm:pl-10">
+          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full sm:pl-10 sm:right-16">
             <div className="pointer-events-auto w-screen max-w-md">
               <div className="flex mt-[72px] max-sm:mt-[94px] max-h-[86vh] no-scrollbar h-max flex-col overflow-y-scroll bg-white shadow-xl">
                 <div className="flex-1 overflow-y-auto flex flex-col h-full px-4 py-6 sm:px-6">
@@ -47,16 +56,26 @@ const MiniCart = ({ toggleMiniCart }) => {
                       </button>
                     </div>
                   </div>
+                      {loading ? (
+                      <Loader />
+                        ) : (
                   <div className="mt-8 no-scrollbar overflow-y-scroll max-sm:grow">
                     <div className="flow-root ">
-                      <CartItemContainer />
+                        <CartItemContainer lineItems={products?.lineItems} />
                     </div>
                   </div>
+                      )}
                 </div>
                 <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                   <div className="flex justify-between text-base font-medium text-gray-900">
                     <p>Subtotal</p>
-                    <p>$262.00</p>
+                    <p>
+                      $
+                      {getPrice({
+                        centAmount: products?.totalPrice?.centAmount,
+                        fractionDigits: products?.totalPrice?.fractionDigits,
+                      })}
+                    </p>
                   </div>
                   <p className="mt-0.5 text-sm text-gray-500">
                     Shipping and taxes calculated at checkout.
@@ -68,19 +87,6 @@ const MiniCart = ({ toggleMiniCart }) => {
                     >
                       Checkout
                     </a>
-                  </div>
-                  <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
-                    <p>
-                      or &nbsp;
-                      <button
-                        type="button"
-                        onClick={toggleMiniCart}
-                        className="font-medium text-indigo-600 hover:text-indigo-500"
-                      >
-                        Continue Shopping
-                        <span aria-hidden="true"> →</span>
-                      </button>
-                    </p>
                   </div>
                 </div>
               </div>

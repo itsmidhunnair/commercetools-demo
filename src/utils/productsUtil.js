@@ -61,6 +61,7 @@ const destructData = (data) => {
   desructuredData.image = data.masterVariant.images[0].url;
   desructuredData.currencyCode =
     data.masterVariant.prices[0].value.currencyCode;
+  desructuredData.sku = data.masterVariant.sku;
   const centAmount = data.masterVariant.prices[0].value.centAmount;
   const fractionDigits = data.masterVariant.prices[0].value.fractionDigits;
 
