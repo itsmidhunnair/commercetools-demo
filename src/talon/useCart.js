@@ -9,6 +9,7 @@ import { destructData } from "../utils/productsUtil";
 
 const useCart = () => {
   const [products, setProducts] = useState();
+  console.log("🚀 ~ file: useCart.js:12 ~ useCart ~ products:", products);
   const [loading, setLoading] = useState(true);
 
   const [addItemToCart] = useMutation(addToCartQuery);
@@ -21,7 +22,7 @@ const useCart = () => {
    *
    * @param {{prod_id:String, qty:String, sku:String}}
    */
-  const addToCart = async ({ prod_id, qty, sku }) => {
+  const addToCart = async ({ qty, sku }) => {
     try {
       const { data } = await addItemToCart({
         variables: {
@@ -68,7 +69,7 @@ const useCart = () => {
    */
   const removeItemFromCart = async (item_id) => {
     try {
-      const data = await removeLineItem({
+      const { data } = await removeLineItem({
         variables: {
           input: {
             cart_id: localStorage.getItem("cart_id"),
@@ -81,8 +82,14 @@ const useCart = () => {
         "🚀 ~ file: useCart.js:80 ~ removeItemFromCart ~ data:",
         data
       );
+      localStorage.setItem("cart_version", data?.deleteFromCart.version);
+      localStorage.setItem("cart_id", data?.deleteFromCart.id);
+      setProducts(data?.deleteFromCart);
     } catch (error) {
-    console.log("🚀 ~ file: useCart.js:85 ~ removeItemFromCart ~ error:", error)
+      console.log(
+        "🚀 ~ file: useCart.js:85 ~ removeItemFromCart ~ error:",
+        error
+      );
     }
   };
 

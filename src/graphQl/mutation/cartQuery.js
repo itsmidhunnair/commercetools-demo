@@ -5,12 +5,41 @@ import { gql } from "@apollo/client";
  */
 const addToCartQuery = gql`
   mutation addToCart($input: CartData) {
-    addToCart(input: $input)
+    addToCart(input: $input) {
+      id
+      version
+      lineItems {
+        id
+        name {
+          en
+        }
+        productId
+        variant {
+          images {
+            url
+          }
+          prices {
+            value {
+              currencyCode
+              centAmount
+              fractionDigits
+            }
+          }
+          sku
+        }
+        quantity
+      }
+      totalPrice {
+        centAmount
+        currencyCode
+        fractionDigits
+      }
+    }
   }
 `;
 
 const fetchLineItemQuery = gql`
-  mutation FetchCart($cartId: String) {
+  mutation fetchCart($cartId: String) {
     fetchCart(cart_id: $cartId) {
       anonymousId
       lineItems {
@@ -46,7 +75,36 @@ const fetchLineItemQuery = gql`
 
 const removeLineItemQuery = gql`
   mutation deleteFromCart($input: DeleteItemFromCart) {
-    addToCart(input: $input)
+    deleteFromCart(input: $input) {
+      id
+      version
+      lineItems {
+        id
+        name {
+          en
+        }
+        productId
+        variant {
+          images {
+            url
+          }
+          prices {
+            value {
+              currencyCode
+              centAmount
+              fractionDigits
+            }
+          }
+          sku
+        }
+        quantity
+      }
+      totalPrice {
+        centAmount
+        currencyCode
+        fractionDigits
+      }
+    }
   }
 `;
 
