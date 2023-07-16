@@ -34,6 +34,7 @@ const addToCartQuery = gql`
         currencyCode
         fractionDigits
       }
+      anonymousId
     }
   }
 `;
@@ -69,6 +70,7 @@ const fetchLineItemQuery = gql`
         currencyCode
         fractionDigits
       }
+      anonymousId
     }
   }
 `;
@@ -104,6 +106,7 @@ const removeLineItemQuery = gql`
         currencyCode
         fractionDigits
       }
+      anonymousId
     }
   }
 `;
