@@ -19,6 +19,7 @@ import {
   registerUserWithGoogleQuery,
   userExistQuery,
 } from "../graphQl/mutation/userQuery";
+import { paths } from "../constants/paths";
 
 const useAuth = () => {
   const [otpField, setOtpField] = useState(false);
@@ -356,7 +357,7 @@ const useAuth = () => {
       //   ),
       //   isLoading: false,
       // });
-      navigate("/products");
+      navigate(paths.plp);
     } catch (error) {
       console.log(error);
     }
@@ -378,7 +379,7 @@ const useAuth = () => {
           token: `bearer ${_tokenResponse.idToken}`,
         },
       });
-      navigate("/products");
+      navigate(paths.plp);
       toast.update(loading, {
         ...toastConfig,
         render: "User Loggedin Successfully!!",
@@ -406,8 +407,11 @@ const useAuth = () => {
   const getUserName = () => {
     return auth?.currentUser?.displayName;
   };
+  const getUserEmail = () => {
+    return auth?.currentUser?.email;
+  };
 
-  if (location.pathname === "/login" && otp.length === 6) {
+  if (location.pathname === paths.login && otp.length === 6) {
     submitLoginOTP();
   }
 
@@ -424,6 +428,7 @@ const useAuth = () => {
     register,
     handleSubmit,
     getUserName,
+    getUserEmail,
   };
 };
 export default useAuth;

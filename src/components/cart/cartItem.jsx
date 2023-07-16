@@ -4,7 +4,7 @@ import useCart from "../../talon/useCart";
 import { getPrice } from "../../utils/productsUtil";
 
 const CartItem = ({ data }) => {
-  const { removeItemFromCart } = useCart();
+  const { removeItemFromCart,handleQtyChange } = useCart();
 
   return (
     <li className="flex py-6">
@@ -35,6 +35,7 @@ const CartItem = ({ data }) => {
             Qty{" "}
             <span>
               <input
+                onChange={(e)=>handleQtyChange({item_id:data?.id,qty:e})}
                 type="number"
                 max={25}
                 min={1}

@@ -5,6 +5,7 @@ import PdpContainer from "../components/pdp/pdpContainer";
 import PlpContainer from "../components/plp/plpContainer";
 import SignupForm from "../components/signup";
 import { paths } from "../constants/paths";
+import Checkout from "../components/checkout/checkout";
 
 const Layout = () => {
   return (
@@ -16,6 +17,7 @@ const Layout = () => {
         <Route path={paths.root} element={<PlpContainer />} />
         <Route path={paths.plp} element={<PlpContainer />} />
         <Route path={paths.pdp} element={<PdpContainer />} />
+        <Route path={paths.checkout} element={<Checkout />} />
       </Routes>
     </>
   );

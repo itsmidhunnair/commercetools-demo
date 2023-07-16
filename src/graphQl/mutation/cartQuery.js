@@ -76,7 +76,7 @@ const fetchLineItemQuery = gql`
 `;
 
 const removeLineItemQuery = gql`
-  mutation deleteFromCart($input: DeleteItemFromCart) {
+  mutation deleteFromCart($input: EditLineItem) {
     deleteFromCart(input: $input) {
       id
       version
@@ -111,4 +111,52 @@ const removeLineItemQuery = gql`
   }
 `;
 
-export { addToCartQuery, fetchLineItemQuery, removeLineItemQuery };
+const updateLineItemQtyQuery = gql`
+  mutation updateItemQty($input: EditLineItem) {
+    updateItemQty(input: $input) {
+      id
+      version
+      lineItems {
+        id
+        name {
+          en
+        }
+        productId
+        variant {
+          images {
+            url
+          }
+          prices {
+            value {
+              currencyCode
+              centAmount
+              fractionDigits
+            }
+          }
+          sku
+        }
+        quantity
+      }
+      totalPrice {
+        centAmount
+        currencyCode
+        fractionDigits
+      }
+      anonymousId
+    }
+  }
+`;
+
+const addShippingAddressQuery = gql`
+  mutation AddShippingAddr($input: Address) {
+    addShippingAddr(input: $input)
+  }
+`;
+
+export {
+  addToCartQuery,
+  fetchLineItemQuery,
+  removeLineItemQuery,
+  updateLineItemQtyQuery,
+  addShippingAddressQuery,
+};
