@@ -5,9 +5,13 @@ import Loader from "../common/loader";
 import CartItemContainer from "./cartItemContainer";
 import { Link } from "react-router-dom";
 import { paths } from "../../constants/paths";
+import { useContext } from "react";
+import { CartContext } from "../../context/cart/cartContext";
 
 const MiniCart = ({ toggleMiniCart }) => {
-  const { getLineItems, products,loading } = useCart();
+  const { getLineItems, loading } = useCart();
+
+  const { cartItem } = useContext(CartContext);
 
   useEffect(() => {
     getLineItems();
@@ -63,7 +67,7 @@ const MiniCart = ({ toggleMiniCart }) => {
                   ) : (
                     <div className="mt-8 no-scrollbar overflow-y-scroll max-sm:grow">
                       <div className="flow-root ">
-                        <CartItemContainer lineItems={products?.lineItems} />
+                        <CartItemContainer lineItems={cartItem?.lineItems} />
                       </div>
                     </div>
                   )}
@@ -73,10 +77,10 @@ const MiniCart = ({ toggleMiniCart }) => {
                     <p>Subtotal</p>
                     <p>
                       {getPrice({
-                        centAmount: products?.totalPrice?.centAmount,
-                        fractionDigits: products?.totalPrice?.fractionDigits,
+                        centAmount: cartItem?.totalPrice?.centAmount,
+                        fractionDigits: cartItem?.totalPrice?.fractionDigits,
                       })}
-                      &nbsp;{products?.totalPrice.currencyCode}
+                      &nbsp;{cartItem?.totalPrice.currencyCode}
                     </p>
                   </div>
                   <p className="mt-0.5 text-sm text-gray-500">

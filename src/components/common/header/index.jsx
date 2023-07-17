@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { CartContext } from "../../../context/cart/cartContext";
 import useMenuHandling from "../../../talon/header/useMenuHandling";
 import useAuth from "../../../talon/useAuth";
 import MiniCart from "../../cart/miniCart";
@@ -7,6 +9,7 @@ import SearchBox from "./searchBox";
 const Header = () => {
   const { cart, menu, toggleMenu, toggleMiniCart } = useMenuHandling();
   const { getUserName } = useAuth();
+  const {cartItem} = useContext(CartContext)
   return (
     <>
       <div className="bg-white shadow-md sticky top-0 z-50">
@@ -83,7 +86,7 @@ const Header = () => {
                     />
                   </svg>
 
-                  <span className="pl-1 text-gray-500 text-md">0</span>
+                  <span className="pl-1 text-gray-500 text-md">{cartItem?.lineItems.length}</span>
                 </Link>
                 <Link
                   to="/login"

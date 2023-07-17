@@ -4,6 +4,8 @@ import Layout from "./router";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MiniCart from "./components/cart/miniCart";
+import CartContextProvider from "./context/cart/cartContextProvider";
+import CheckoutContextProvider from "./context/checkout/checkoutContextProvider";
 
 function App() {
   const client = new ApolloClient({
@@ -16,7 +18,11 @@ function App() {
     <BrowserRouter>
       <ApolloProvider client={client}>
         <div>
-          <Layout />
+          <CartContextProvider>
+            <CheckoutContextProvider>
+              <Layout />
+            </CheckoutContextProvider>
+          </CartContextProvider>
           <div id="recaptcha-container"></div>
         </div>
         <ToastContainer

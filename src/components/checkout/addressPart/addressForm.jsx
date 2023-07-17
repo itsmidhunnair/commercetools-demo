@@ -1,14 +1,31 @@
-import React from "react";
+import React, { useContext } from "react";
 import useCheckout from "../../../talon/useCheckout";
 import useAuth from "../../../talon/useAuth";
+import { CartContext } from "../../../context/cart/cartContext";
+import { useEffect } from "react";
 
-const AddressForm = ({ submitAddressForm }) => {
-  const { getUserEmail } = useAuth();
-  const { register, handleSubmit } = useCheckout();
+const AddressForm = ({ submitForm, address }) => {
+  const { register, handleSubmit, setValue } = useCheckout();
+  const { cartItem } = useContext(CartContext);
+
+  useEffect(() => {
+    setValue("salutation", address?.salutation);
+    setValue("firstName", address?.firstName);
+    setValue("lastName", address?.lastName);
+    setValue("email", address?.email);
+    setValue("mobile", address?.mobile);
+    setValue("building", address?.building);
+    setValue("streetName", address?.streetName);
+    setValue("city", address?.city);
+    setValue("postalCode", address?.postalCode);
+    setValue("state", address?.state);
+    setValue("country", address?.country);
+  }, [cartItem]);
+
   return (
     <form
       className="justify-center w-full mx-auto"
-      onSubmit={handleSubmit(submitAddressForm)}
+      onSubmit={handleSubmit(submitForm)}
     >
       <div className="">
         <div className="space-x-0 lg:flex lg:space-x-4">
@@ -21,12 +38,10 @@ const AddressForm = ({ submitAddressForm }) => {
             </label>
             <select
               name="salutation"
-              placeholder="First Name"
-              defaultValue="select"
               {...register("salutation")}
               className="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
             >
-              <option disabled value="select">
+              <option disabled defaultChecked value="select">
                 Select{" "}
               </option>
               <option value="Mr.">Mr.</option>
@@ -77,7 +92,6 @@ const AddressForm = ({ submitAddressForm }) => {
               name="Email"
               type="text"
               {...register("email")}
-              defaultValue={getUserEmail()}
               placeholder="Email"
               className="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
@@ -178,20 +192,25 @@ const AddressForm = ({ submitAddressForm }) => {
               className="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
           </div>
-          <div className="w-full lg:w-1/2 ">
+          <div className="w-full lg:w-1/2">
             <label
               htmlFor="country"
               className="block mb-3 text-sm font-semibold text-gray-500"
             >
               Country
             </label>
-            <input
+            <select
               name="country"
-              type="text"
-              {...register("country")}
               placeholder="Country"
+              {...register("country")}
               className="w-full px-4 py-3 text-sm border border-gray-300 rounded lg:text-sm focus:outline-none focus:ring-1 focus:ring-blue-600"
-            />
+            >
+              <option disabled defaultChecked value="select">
+                Select Country
+              </option>
+              <option value="DE">Germany</option>
+              <option value="US">United States</option>
+            </select>
           </div>
         </div>
         {/* <div className="flex items-center mt-4">
@@ -210,7 +229,7 @@ const AddressForm = ({ submitAddressForm }) => {
             type="submit"
             className="w-full px-6 py-2 text-blue-200 bg-blue-600 hover:bg-blue-900"
           >
-            Process
+            Proceed
           </button>
         </div>
       </div>

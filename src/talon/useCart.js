@@ -6,12 +6,13 @@ import {
   removeLineItemQuery,
   updateLineItemQtyQuery,
 } from "../graphQl/mutation/cartQuery";
-import { destructData } from "../utils/productsUtil";
 import { debounce } from "lodash";
+import { useContext } from "react";
+import { CartContext } from "../context/cart/cartContext";
 
 const useCart = () => {
-  const [products, setProducts] = useState();
-  console.log("🚀 ~ file: useCart.js:12 ~ useCart ~ products:", products);
+  // const [cartItem, setCartItem] = useState();
+  const { cartItem, setCartItem } = useContext(CartContext);
   const [loading, setLoading] = useState(true);
 
   const [addItemToCart] = useMutation(addToCartQuery);
@@ -41,13 +42,8 @@ const useCart = () => {
       localStorage.setItem("cart_id", data?.addToCart.id);
       localStorage.setItem("cart_version", data?.addToCart.version);
       localStorage.setItem("anonymous_id", data?.addToCart.anonymousId);
-      console.log(
-        "🚀 ~ file: useCart.js:20 ~ addToCart ~ data.addToCart:",
-        data
-      );
-    } catch (error) {
-      console.log("🚀 ~ file: useCart.js:22 ~ addToCart ~ error:", error);
-    }
+      setCartItem(data.addToCart);
+    } catch (error) {}
   };
 
   /**
@@ -61,7 +57,7 @@ const useCart = () => {
         },
       });
       setLoading(false);
-      setProducts(data.fetchCart);
+      setCartItem(data.fetchCart);
     } catch (error) {
       console.log(error);
     }
@@ -82,20 +78,11 @@ const useCart = () => {
           },
         },
       });
-      console.log(
-        "🚀 ~ file: useCart.js:80 ~ removeItemFromCart ~ data:",
-        data
-      );
       localStorage.setItem("cart_version", data?.deleteFromCart.version);
       localStorage.setItem("cart_id", data?.deleteFromCart.id);
       localStorage.setItem("anonymous_id", data?.deleteFromCart.anonymousId);
-      setProducts(data?.deleteFromCart);
-    } catch (error) {
-      console.log(
-        "🚀 ~ file: useCart.js:85 ~ removeItemFromCart ~ error:",
-        error
-      );
-    }
+      setCartItem(data?.deleteFromCart);
+    } catch (error) {}
   };
 
   /**
@@ -121,19 +108,11 @@ const useCart = () => {
             },
           },
         });
-        console.log(
-          "🚀 ~ file: useCart.js:113 ~ updateLineItemQty ~ data:",
-          data
-        );
         localStorage.setItem("cart_version", data?.updateItemQty.version);
         localStorage.setItem("cart_id", data?.updateItemQty.id);
         localStorage.setItem("anonymous_id", data?.updateItemQty.anonymousId);
-      } catch (error) {
-        console.log(
-          "🚀 ~ file: useCart.js:120 ~ updateLineItemQty ~ error:",
-          error
-        );
-      }
+        setCartItem(data?.updateItemQty);
+      } catch (error) {}
     }
   };
 
@@ -146,7 +125,7 @@ const useCart = () => {
   return {
     addToCart,
     getLineItems,
-    products,
+    cartItem,
     loading,
     handleQtyChange,
     removeItemFromCart,

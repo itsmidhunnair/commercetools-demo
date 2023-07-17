@@ -4,7 +4,7 @@ import useCart from "../../talon/useCart";
 import { getPrice } from "../../utils/productsUtil";
 
 const CartItem = ({ data }) => {
-  const { removeItemFromCart,handleQtyChange } = useCart();
+  const { removeItemFromCart, handleQtyChange } = useCart();
 
   return (
     <li className="flex py-6">
