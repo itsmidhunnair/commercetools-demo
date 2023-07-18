@@ -11,6 +11,7 @@ import ShippingMethodForm from "./shippingMethod/shippingMethodForm";
 import { useEffect } from "react";
 import { findIndex } from "lodash";
 import ShippingMethodDisplay from "./shippingMethod/shippingMethodDisplay";
+import EmailForm from "./emailPart/emailForm";
 
 const Checkout = () => {
   const { submitAddressForm, submitBillingForm, confirmOrder } = useCheckout();
@@ -26,6 +27,8 @@ const Checkout = () => {
     <div className="container p-12 mx-auto">
       <div className="flex flex-col w-full px-0 mx-auto md:flex-row">
         <div className="flex flex-col md:w-full">
+          <div>{size(step) >= 0 && <EmailForm/>}
+          </div>
           <div>
             {cartItem?.shippingAddress && size(step) >= 1 ? (
               <div className="mb-4 border-2 rounded-lg px-3 pb-3">

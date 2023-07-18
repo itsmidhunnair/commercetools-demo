@@ -8,7 +8,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../../config/firebase.config";
 
-export const Login = () => {
+export const Login = () => {  
   const [user] = useAuthState(auth);
 
   const navigate = useNavigate();
@@ -63,11 +63,15 @@ export const Login = () => {
     }
   }, [user, search, navigate]);
 
+
+  // ------------ Will handle login Initial Execution Starts -------------
   const handleLogin = (e) => {
     e.preventDefault();
     setLoginLoading(true);
+
+    // ------------------------ Will Send a signin link in email to user --------------
     sendSignInLinkToEmail(auth, email, {
-      // this is the URL that we will redirect back to after clicking on the link in mailbox
+      // ---------------- this is the URL that we will redirect back to after clicking on the link in mailbox
       url: "http://localhost:3000/login",
       handleCodeInApp: true,
     })

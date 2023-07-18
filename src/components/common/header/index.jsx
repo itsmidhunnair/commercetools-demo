@@ -5,11 +5,12 @@ import useMenuHandling from "../../../talon/header/useMenuHandling";
 import useAuth from "../../../talon/useAuth";
 import MiniCart from "../../cart/miniCart";
 import SearchBox from "./searchBox";
+import { paths } from "../../../constants/paths";
 
 const Header = () => {
   const { cart, menu, toggleMenu, toggleMiniCart } = useMenuHandling();
   const { getUserName } = useAuth();
-  const {cartItem} = useContext(CartContext)
+  const { cartItem } = useContext(CartContext);
   return (
     <>
       <div className="bg-white shadow-md sticky top-0 z-50">
@@ -46,16 +47,22 @@ const Header = () => {
 
             <div className="hidden md:flex space-x-3 flex-1 lg:ml-8">
               <Link
-                to="/"
+                to={paths.root}
                 className="px-2 py-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-gray-600"
               >
                 Home
               </Link>
               <Link
-                to="/products"
+                to={paths.plp}
                 className="px-2 py-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-gray-600"
               >
                 Products
+              </Link>
+              <Link
+                to={paths.orders}
+                className="px-2 py-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-gray-600"
+              >
+                Orders
               </Link>
             </div>
 
@@ -86,7 +93,9 @@ const Header = () => {
                     />
                   </svg>
 
-                  <span className="pl-1 text-gray-500 text-md">{cartItem?.lineItems.length}</span>
+                  <span className="pl-1 text-gray-500 text-md">
+                    {cartItem?.lineItems.length}
+                  </span>
                 </Link>
                 <Link
                   to="/login"

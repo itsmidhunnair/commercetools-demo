@@ -1,25 +1,43 @@
-import React from 'react'
+import React from "react";
+import { getPrice } from "../../utils/productsUtil";
+import OrderPage from "./orderPage";
 
-const OrderCard = () => {
+const OrderCard = ({ data }) => {
   return (
-    <div className="block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
+    <div className="lg:w-1/4 block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
       <h5 className="mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50">
-        Card title
+        Order No.: {data?.orderNumber}
       </h5>
       <p className="mb-4 text-base text-neutral-600 dark:text-neutral-200">
-        Some quick example text to build on the card title and make up the bulk
-        of the card's content.
+        {data?.lineItems.map((item) => item.name.en + ",")}
       </p>
       <button
         type="button"
-        className="inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+        onClick={()=><OrderPage/>}
+        className="inline-block rounded bg-slate-700 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
         data-te-ripple-init=""
         data-te-ripple-color="light"
       >
         Button
       </button>
+      <span
+        type="button"
+        className="inline-block float-right rounded text-slate-700 px-6 pb-2 pt-2.5 text-xs font-bold uppercase leading-normal"
+        data-te-ripple-init=""
+        data-te-ripple-color="light"
+      >
+        {getPrice({
+          centAmount: data?.totalPrice.centAmount,
+          fractionDigits: data?.totalPrice.fractionDigits,
+        })}
+        &nbsp;
+        {data?.totalPrice.currencyCode}
+      </span>
+      <div className="rounded text-slate-700 px-6 pb-2 pt-2.5 text-xs font-bold uppercase leading-normal">
+        {data.orderState}
+      </div>
     </div>
   );
-}
+};
 
-export default OrderCard
+export default OrderCard;
