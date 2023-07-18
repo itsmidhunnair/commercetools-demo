@@ -3,6 +3,8 @@ import { debounce } from "lodash";
 import React, { useState } from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { toastConfig } from "../constants/reactToastify/toastConfig";
 import { CartContext } from "../context/cart/cartContext";
 import { CheckoutContext } from "../context/checkout/checkoutContext";
 import {
@@ -47,10 +49,10 @@ const useCheckout = () => {
       setCartItem(data?.addShippingAddr);
       setStep([{ step: 1, value: formInput }]);
     } catch (error) {
-      console.log(
-        "🚀 ~ file: useCheckout.js:23 ~ submitAddressForm ~ error:",
-        error
-      );
+      // console.log(
+      // "🚀 ~ file: useCheckout.js:23 ~ submitAddressForm ~ error:",
+      // error
+      // );
     }
   };
 
@@ -58,10 +60,10 @@ const useCheckout = () => {
    * Submit Shipping Method
    */
   const submitShippingMethod = async (input) => {
-    console.log(
-      "🚀 ~ file: useCheckout.js:55 ~ submitShippingMethod ~ input:",
-      input
-    );
+    // console.log(
+    // "🚀 ~ file: useCheckout.js:55 ~ submitShippingMethod ~ input:",
+    // input
+    // );
     try {
       const { data } = await addShippingMethod({
         variables: {
@@ -72,23 +74,23 @@ const useCheckout = () => {
           },
         },
       });
-      console.log(
-        "🚀 ~ file: useCheckout.js:70 ~ submitShippingMethod ~ data:",
-        data
-      );
+      // console.log(
+      // "🚀 ~ file: useCheckout.js:70 ~ submitShippingMethod ~ data:",
+      // data
+      // );
       localStorage.setItem("cart_id", data?.addShippingMeth.id);
       localStorage.setItem("cart_version", data?.addShippingMeth.version);
       localStorage.setItem("anonymous_id", data?.addShippingMeth.anonymousId);
-      console.log(
-        "🚀 ~ file: useCheckout.js:70 ~ submitShippingMethod ~ data:",
-        data
-      );
+      // console.log(
+      // "🚀 ~ file: useCheckout.js:70 ~ submitShippingMethod ~ data:",
+      // data
+      // );
       setStep([...step, { step: 2, value: input.shipping_method }]);
     } catch (error) {
-      console.log(
-        "🚀 ~ file: useCheckout.js:69 ~ submitShippingMethod ~ error:",
-        error
-      );
+      // console.log(
+      // "🚀 ~ file: useCheckout.js:69 ~ submitShippingMethod ~ error:",
+      // error
+      // );
     }
   };
 
@@ -96,10 +98,10 @@ const useCheckout = () => {
    * Submit Billing Address Form
    */
   const submitBillingForm = async (formInput) => {
-    console.log(
-      "🚀 ~ file: useCheckout.js:96 ~ submitBillingForm ~ formInput:",
-      formInput
-    );
+    // console.log(
+    // "🚀 ~ file: useCheckout.js:96 ~ submitBillingForm ~ formInput:",
+    // formInput
+    // );
     try {
       const { data } = await addBillingAddress({
         variables: {
@@ -110,20 +112,20 @@ const useCheckout = () => {
           },
         },
       });
-      console.log(
-        "🚀 ~ file: useCheckout.js:107 ~ submitBillingForm ~ data:",
-        data
-      );
+      // console.log(
+      // "🚀 ~ file: useCheckout.js:107 ~ submitBillingForm ~ data:",
+      // data
+      // );
       localStorage.setItem("cart_id", data?.addBillingAddr.id);
       localStorage.setItem("cart_version", data?.addBillingAddr.version);
       localStorage.setItem("anonymous_id", data?.addBillingAddr.anonymousId);
       setCartItem(data?.addBillingAddr);
       setStep([...step, { step: 3, value: formInput }]);
     } catch (error) {
-      console.log(
-        "🚀 ~ file: useCheckout.js:23 ~ submitAddressForm ~ error:",
-        error
-      );
+      // console.log(
+      // "🚀 ~ file: useCheckout.js:23 ~ submitAddressForm ~ error:",
+      // error
+      // );
     }
   };
 
@@ -131,8 +133,9 @@ const useCheckout = () => {
    * Place Order
    */
   const confirmOrder = async () => {
+    const loading = toast.loading("Place Order, Please Wait...");
     try {
-      const data = await placeOrder({
+      const {data} = await placeOrder({
         variables: {
           input: {
             cart_id: localStorage.getItem("cart_id"),
@@ -140,12 +143,39 @@ const useCheckout = () => {
           },
         },
       });
-      console.log("🚀 ~ file: useCheckout.js:143 ~ confirmOrder ~ data:", data);
+      // console.log("🚀 ~ file: useCheckout.js:146 ~ confirmOrder ~ data:", data)
+
+      localStorage.removeItem("cart_version");
+      localStorage.removeItem("cart_id");
+      localStorage.setItem("anonymous_id", data?.placeOrder.anonymousId);
+      localStorage.setItem("order_id", data?.placeOrder.id);
+      localStorage.setItem("order_number", data?.placeOrder.orderNumber);
+      // console.log("🚀 ~ file: useCheckout.js:143 ~ confirmOrder ~ data:", data);
+      toast.update(loading, {
+        ...toastConfig,
+        render: (
+          <div>
+            Order Placed Successfully!
+            <br />
+            Please Note this Order Number for future reference:{" "}
+            <span className="font-bold">{data?.placeOrder.orderNumber}</span>
+          </div>
+        ),
+        type: "success",
+        isLoading: false,
+        autoClose: false,
+      });
     } catch (error) {
-      console.log(
-        "🚀 ~ file: useCheckout.js:145 ~ confirmOrder ~ error:",
-        error
-      );
+      // console.log(
+      // "🚀 ~ file: useCheckout.js:145 ~ confirmOrder ~ error:",
+      // error
+      // );
+      toast.update(loading, {
+        ...toastConfig,
+        render: "Internal Server Error, Please Try again later",
+        type: "error",
+        isLoading: false,
+      });
     }
   };
 

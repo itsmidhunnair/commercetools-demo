@@ -5,6 +5,7 @@ const appPath = {
   checkout: "/checkout",
   signup: "/signup",
   login: "/login",
+  orders: "/orders",
 };
 
 export const paths = {
