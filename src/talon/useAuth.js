@@ -411,6 +411,19 @@ const useAuth = () => {
     return auth?.currentUser?.email;
   };
 
+  /**
+   * To Logout User
+   * Signs out firebase user and removes commercetools auth_token cookie
+   *  
+   */
+  const signout = async () => {
+    try {
+      // const data = await 
+    } catch (error) {
+      
+    }
+  }
+
   if (location.pathname === paths.login && otp.length === 6) {
     submitLoginOTP();
   }

@@ -100,6 +100,7 @@ const fetchLineItemQuery = gql`
         state
         streetName
       }
+      customerEmail
       anonymousId
     }
   }
@@ -136,6 +137,7 @@ const removeLineItemQuery = gql`
         currencyCode
         fractionDigits
       }
+      customerEmail
       anonymousId
     }
   }
@@ -172,7 +174,88 @@ const updateLineItemQtyQuery = gql`
         currencyCode
         fractionDigits
       }
+      customerEmail
       anonymousId
+    }
+  }
+`;
+
+const lineCustomerEmailToCartQuery = gql`
+  mutation linkCustomerEmailToCart($input: CartInfo!) {
+    addCustomerEmail(input: $input) {
+      id
+      version
+      lineItems {
+        id
+        name {
+          en
+        }
+        productId
+        variant {
+          images {
+            url
+          }
+          prices {
+            value {
+              currencyCode
+              centAmount
+              fractionDigits
+            }
+          }
+          sku
+        }
+        quantity
+      }
+      totalPrice {
+        centAmount
+        currencyCode
+        fractionDigits
+      }
+      customerEmail
+      anonymousId
+      taxedPrice {
+        totalNet {
+          centAmount
+          currencyCode
+          fractionDigits
+        }
+        totalTax {
+          centAmount
+          currencyCode
+          fractionDigits
+        }
+        totalGross {
+          centAmount
+          currencyCode
+          fractionDigits
+        }
+      }
+      shippingAddress {
+        building
+        city
+        country
+        email
+        firstName
+        lastName
+        mobile
+        postalCode
+        salutation
+        state
+        streetName
+      }
+      billingAddress {
+        building
+        city
+        country
+        email
+        firstName
+        lastName
+        mobile
+        postalCode
+        salutation
+        state
+        streetName
+      }
     }
   }
 `;
@@ -208,6 +291,7 @@ const addShippingAddressQuery = gql`
         currencyCode
         fractionDigits
       }
+      customerEmail
       anonymousId
       taxedPrice {
         totalNet {
@@ -287,6 +371,7 @@ const addBillingAddressQuery = gql`
         currencyCode
         fractionDigits
       }
+      customerEmail
       anonymousId
       taxedPrice {
         totalNet {
@@ -366,6 +451,7 @@ const addShippingMethodQuery = gql`
         currencyCode
         fractionDigits
       }
+      customerEmail
       anonymousId
       taxedPrice {
         totalNet {
@@ -417,4 +503,5 @@ export {
   addShippingMethodQuery,
   addBillingAddressQuery,
   placeOrderQuery,
+  lineCustomerEmailToCartQuery,
 };

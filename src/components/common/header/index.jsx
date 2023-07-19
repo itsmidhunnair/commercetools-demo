@@ -6,6 +6,7 @@ import useAuth from "../../../talon/useAuth";
 import MiniCart from "../../cart/miniCart";
 import SearchBox from "./searchBox";
 import { paths } from "../../../constants/paths";
+import Logout from "./logout";
 
 const Header = () => {
   const { cart, menu, toggleMenu, toggleMiniCart } = useMenuHandling();
@@ -123,6 +124,7 @@ const Header = () => {
                     {getUserName()}
                   </span>
                 </Link>
+                <Logout />
                 {cart && <MiniCart toggleMiniCart={toggleMiniCart} />}
               </div>
             </div>

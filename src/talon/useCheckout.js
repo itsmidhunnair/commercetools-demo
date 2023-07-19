@@ -1,5 +1,4 @@
 import { useMutation } from "@apollo/client";
-import { debounce } from "lodash";
 import React, { useState } from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
@@ -11,15 +10,19 @@ import {
   addBillingAddressQuery,
   addShippingAddressQuery,
   addShippingMethodQuery,
+  lineCustomerEmailToCartQuery,
   placeOrderQuery,
 } from "../graphQl/mutation/cartQuery";
 
 const useCheckout = () => {
+  const [email, setEmail] = useState(false);
+
   const { setStep, step } = useContext(CheckoutContext);
   const { setCartItem } = useContext(CartContext);
 
   const { register, handleSubmit, setValue } = useForm();
 
+  const [addCustomerEmailToCart] = useMutation(lineCustomerEmailToCartQuery);
   const [addShippingAddress] = useMutation(addShippingAddressQuery);
   const [addShippingMethod] = useMutation(addShippingMethodQuery);
   const [addBillingAddress] = useMutation(addBillingAddressQuery);
@@ -49,10 +52,41 @@ const useCheckout = () => {
       setCartItem(data?.addShippingAddr);
       setStep([{ step: 1, value: formInput }]);
     } catch (error) {
-      // console.log(
-      // "🚀 ~ file: useCheckout.js:23 ~ submitAddressForm ~ error:",
-      // error
-      // );
+      console.log(
+        "🚀 ~ file: useCheckout.js:23 ~ submitAddressForm ~ error:",
+        error
+      );
+    }
+  };
+
+  /**
+   * Submit Customer Email
+   */
+  const submitCustomerEmail = async ({ email }) => {
+    try {
+      const { data } = await addCustomerEmailToCart({
+        variables: {
+          input: {
+            cart_id: localStorage.getItem("cart_id"),
+            version: parseInt(localStorage.getItem("cart_version")),
+            email: email,
+          },
+        },
+      });
+      console.log(
+        "🚀 ~ file: useCheckout.js:76 ~ submitCustomerEmail ~ data:",
+        data
+      );
+      setEmail(true);
+      localStorage.setItem("cart_id", data?.addCustomerEmail.id);
+      localStorage.setItem("cart_version", data?.addCustomerEmail.version);
+      localStorage.setItem("anonymous_id", data?.addCustomerEmail.anonymousId);
+      setStep([...step, { step: 1, value: email }]);
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: useCheckout.js:77 ~ submitCustomerEmail ~ error:",
+        error
+      );
     }
   };
 
@@ -135,7 +169,7 @@ const useCheckout = () => {
   const confirmOrder = async () => {
     const loading = toast.loading("Place Order, Please Wait...");
     try {
-      const {data} = await placeOrder({
+      const { data } = await placeOrder({
         variables: {
           input: {
             cart_id: localStorage.getItem("cart_id"),
@@ -165,6 +199,7 @@ const useCheckout = () => {
         isLoading: false,
         autoClose: false,
       });
+      setCartItem();
     } catch (error) {
       // console.log(
       // "🚀 ~ file: useCheckout.js:145 ~ confirmOrder ~ error:",
@@ -187,6 +222,8 @@ const useCheckout = () => {
     submitBillingForm,
     setValue,
     confirmOrder,
+    submitCustomerEmail,
+    email,
   };
 };
 

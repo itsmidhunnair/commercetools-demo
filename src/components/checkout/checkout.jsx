@@ -27,7 +27,8 @@ const Checkout = () => {
     <div className="container p-12 mx-auto">
       <div className="flex flex-col w-full px-0 mx-auto md:flex-row">
         <div className="flex flex-col md:w-full">
-          <div>{size(step) >= 0 && <EmailForm/>}
+          <div>
+            {size(step) >= 0 && <EmailForm emailid={cartItem?.customerEmail} />}
           </div>
           <div>
             {cartItem?.shippingAddress && size(step) >= 1 ? (

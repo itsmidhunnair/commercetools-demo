@@ -26,10 +26,10 @@ export const Login = () => {
   const [initialError, setInitialError] = useState("");
 
   useEffect(() => {
-    if (user) {
-      // user is already signed in
-      navigate("/");
-    } else {
+    // if (user) {
+    //   // user is already signed in
+    //   navigate("/");
+    // } else {
       // user is not signed in but the link is valid
       if (isSignInWithEmailLink(auth, window.location.href)) {
         // now in case user clicks the email link on a different device, we will ask for email confirmation
@@ -60,7 +60,7 @@ export const Login = () => {
       } else {
         console.log("enter email and sign in");
       }
-    }
+    // }
   }, [user, search, navigate]);
 
 
